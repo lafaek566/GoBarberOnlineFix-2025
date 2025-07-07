@@ -43,170 +43,128 @@ const Gallery = ({ activeFilter, setActiveFilter }) => {
       ? galleryImages
       : galleryImages.filter((image) => image.category === activeFilter);
 
-  // State for handling the modal and image being clicked
   const [modalImage, setModalImage] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [imagePos, setImagePos] = useState({ x: 0, y: 0 });
 
-  // Function to handle closing the modal
   const closeModal = () => {
     setModalImage(null);
     setDragging(false);
+    setImagePos({ x: 0, y: 0 });
   };
 
-  // Start dragging
   const handleMouseDown = (e) => {
     e.preventDefault();
     setDragging(true);
     setStartPos({ x: e.clientX, y: e.clientY });
   };
 
-  // Handle dragging
   const handleMouseMove = (e) => {
     if (dragging) {
       const dx = e.clientX - startPos.x;
       const dy = e.clientY - startPos.y;
-      setImagePos({
-        x: imagePos.x + dx,
-        y: imagePos.y + dy,
-      });
+      setImagePos({ x: imagePos.x + dx, y: imagePos.y + dy });
       setStartPos({ x: e.clientX, y: e.clientY });
     }
   };
 
-  // Stop dragging
-  const handleMouseUp = () => {
-    setDragging(false);
-  };
+  const handleMouseUp = () => setDragging(false);
 
-  // For mobile devices, handle touch events
   const handleTouchStart = (e) => {
     e.preventDefault();
     setDragging(true);
-    setStartPos({
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    });
+    setStartPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
   };
 
   const handleTouchMove = (e) => {
     if (dragging) {
       const dx = e.touches[0].clientX - startPos.x;
       const dy = e.touches[0].clientY - startPos.y;
-      setImagePos({
-        x: imagePos.x + dx,
-        y: imagePos.y + dy,
-      });
-      setStartPos({
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-      });
+      setImagePos({ x: imagePos.x + dx, y: imagePos.y + dy });
+      setStartPos({ x: e.touches[0].clientX, y: e.touches[0].clientY });
     }
   };
 
-  const handleTouchEnd = () => {
-    setDragging(false);
-  };
+  const handleTouchEnd = () => setDragging(false);
 
   return (
-    <div className="mt-20">
+    <div className="px-4 sm:px-6 md:px-8 max-w-7xl mx-auto mt-20">
       <h2 className="text-3xl font-bold text-center mb-10">Gallery</h2>
 
-      <div className="flex justify-center space-x-4 mb-10 rounded-3xl">
+      <div className="flex justify-center flex-wrap gap-3 mb-10">
         {["all", "popular", "latest", "top-rated"].map((filter) => (
           <motion.button
             key={filter}
-            className={`px-3 py-2 rounded-3xl text-xs font-semibold  ${
+            className={`px-4 py-2 rounded-3xl text-sm font-semibold transition ${
               activeFilter === filter
-                ? "bg-gray-500 text-white"
-                : "bg-gray-300 text-gray-800"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-800"
             }`}
             onClick={() => setActiveFilter(filter)}
-            whileHover={{ scale: 1.3, transition: { duration: 0.3 } }}
-            whileTap={{ scale: 0.95, transition: { duration: 0 } }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {filter === "all"
-              ? "All"
-              : filter === "popular"
-              ? "Popular"
-              : filter === "latest"
-              ? "Latest"
-              : "Top Rated"}
+            {filter.replace("-", " ").toUpperCase()}
           </motion.button>
         ))}
       </div>
 
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
-        {filteredImages.map((image, index) => {
-          // Handle multiple images if src is an array
-          const imageSources = Array.isArray(image.src)
-            ? image.src
-            : [image.src];
-
-          return imageSources.map((src, i) => (
+        {filteredImages.flatMap((image, index) =>
+          image.src.map((src, i) => (
             <motion.div
-              key={`${index}-${i}`} // Ensure unique key for each image
-              className="relative overflow-hidden rounded-3xl shadow-lg transform transition-transform duration-300 hover:scale-105"
+              key={`${index}-${i}`}
+              className="w-full max-w-[240px] rounded-3xl overflow-hidden shadow-md cursor-pointer"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              onClick={() => setModalImage(src)}
             >
               <img
                 src={src}
-                alt={`Gallery Image ${index + 1}-${i + 1}`}
-                className="w-full h-48 sm:h-56 md:h-64 lg:h-72 object-cover rounded-3xl"
-                style={{ objectFit: "cover" }} // Ensures the image covers the box without distortion
-                onClick={() => setModalImage(src)} // Open the modal with the clicked image
+                alt={`Gallery Image ${index}-${i}`}
+                className="w-full h-48 object-cover"
               />
             </motion.div>
-          ));
-        })}
+          ))
+        )}
       </motion.div>
 
-      {/* Modal for zoomed-in image */}
       {modalImage && (
         <div
-          className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-75 flex justify-center items-center z-50"
-          onClick={closeModal} // Close modal on click outside the image
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={closeModal}
         >
           <motion.div
-            className="relative max-w-4xl max-h-[90%] overflow-auto rounded-xl"
-            whileHover={{ scale: 1.05 }} // Optional zoom effect on hover
-            transition={{ duration: 0.3 }}
+            className="relative max-w-4xl max-h-[90%] overflow-hidden"
+            style={{
+              cursor: dragging ? "grabbing" : "grab",
+              transform: `translate(${imagePos.x}px, ${imagePos.y}px)`,
+            }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            style={{
-              cursor: dragging ? "grabbing" : "grab",
-              transform: `translate(${imagePos.x}px, ${imagePos.y}px)`, // Move image based on mouse/touch drag
-            }}
+            onClick={(e) => e.stopPropagation()}
           >
             <img
               src={modalImage}
-              alt="Zoomed Image"
-              className="w-full h-full object-contain rounded-xl transition-all duration-300"
-              style={{
-                objectFit: "contain", // Maintain aspect ratio and fit within the modal
-              }}
-              onClick={(e) => e.stopPropagation()} // Prevent closing the modal if the image is clicked
+              alt="Modal Preview"
+              className="w-full h-full object-contain rounded-xl"
             />
             <button
               onClick={closeModal}
-              className="absolute top-4 right-4  text-white rounded-full p-1"
+              className="absolute top-4 right-4 text-white text-2xl"
             >
-              &#x2715; {/* Close button */}
+              &times;
             </button>
           </motion.div>
         </div>

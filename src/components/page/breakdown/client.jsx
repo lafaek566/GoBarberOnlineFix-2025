@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal"; // Assuming you're using the 'react-modal' package
+import Modal from "react-modal";
 
 const ClientBarbershop = () => {
   const [barbers, setBarbers] = useState([]);
@@ -15,89 +15,86 @@ const ClientBarbershop = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-2 my-12">
-      <h2 className="text-4xl font-bold text-center mb-8">Our Clients</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+    <div className="mt-20 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto">
+      <h2 className="text-4xl font-bold text-center mb-12">Our Clients</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {barbers.map((barber, index) => (
           <div
             key={index}
-            className="bg-gray-800 text-white shadow-lg rounded-lg overflow-hidden transition transform duration-300 hover:scale-105 hover:shadow-xl"
+            className="bg-white dark:bg-gray-800 rounded-3xl shadow-lg p-8 w-full max-w-[420px] mx-auto hover:shadow-xl transition duration-300"
           >
-            {/* Barber Profile */}
-            <div className="flex flex-col items-center p-6">
-              <div className="w-24 h-24 rounded-full bg-gray-300 overflow-hidden shadow-md mb-4">
-                <img
-                  src={
-                    barber.profile_image
-                      ? `http://localhost:5001${barber.profile_image}`
-                      : "/default-profile.jpg"
-                  }
-                  alt={barber.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3 className="text-xl font-semibold text-center">
-                {barber.name}
-              </h3>
-              <p className="text-[#FFB84D] text-sm text-center">
-                {barber.services}
-              </p>
-              <p className="text-gray-400 text-xs text-center">
-                {barber.location}
-              </p>
+            {/* Profile Image */}
+            <div className="w-32 h-32 rounded-full overflow-hidden shadow-md mx-auto mb-4">
+              <img
+                src={
+                  barber.profile_image
+                    ? `http://localhost:5001${barber.profile_image}`
+                    : "/default-profile.jpg"
+                }
+                alt={barber.name}
+                className="w-full h-full object-cover"
+              />
             </div>
 
+            {/* Name */}
+            <h3 className="text-2xl font-semibold text-center mb-6 text-gray-800 dark:text-white">
+              {barber.name}
+            </h3>
+
             {/* Gallery */}
-            {barber.gallery_images && barber.gallery_images.length > 0 && (
-              <div className="mt-4 px-2 pb-6">
-                <h4 className="text-lg font-semibold text-white  mb-4 text-center">
+            {barber.gallery_images?.length > 0 && (
+              <div className="w-full">
+                <h4 className="text-sm font-medium text-center mb-3 text-gray-700 dark:text-gray-300">
                   Gallery
                 </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                  {barber.gallery_images.map((image, index) => (
+                <div className="grid grid-cols-3 gap-3">
+                  {barber.gallery_images.map((image, idx) => (
                     <div
-                      key={index}
-                      className="relative w-full aspect-w-1 aspect-h-1 rounded-full overflow-hidden shadow-lg cursor-pointer transform transition duration-300 hover:scale-110 hover:shadow-xl"
+                      key={idx}
+                      className="overflow-hidden rounded-xl shadow cursor-pointer hover:scale-105 transform transition"
                       onClick={() =>
                         setSelectedImage(`http://localhost:5001${image}`)
                       }
                     >
                       <img
                         src={`http://localhost:5001${image}`}
-                        alt={`Gallery Image ${index + 1}`}
-                        className="w-full h-full object-cover rounded-full transition duration-300 ease-in-out transform hover:scale-110"
+                        alt={`Gallery ${idx + 1}`}
+                        className="w-full h-24 object-cover"
                       />
                     </div>
                   ))}
                 </div>
               </div>
             )}
-
-            {/* Modal for Zooming Image */}
-            {selectedImage && (
-              <Modal
-                isOpen={!!selectedImage}
-                onRequestClose={() => setSelectedImage(null)}
-                className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75"
-              >
-                <div className="relative bg-white p-4 rounded-lg shadow-lg">
-                  <button
-                    onClick={() => setSelectedImage(null)}
-                    className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600"
-                  >
-                    ✕
-                  </button>
-                  <img
-                    src={selectedImage}
-                    alt="Zoomed"
-                    className="max-w-full max-h-[90vh] rounded-lg transition duration-300 ease-in-out transform hover:scale-110"
-                  />
-                </div>
-              </Modal>
-            )}
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {selectedImage && (
+        <Modal
+          isOpen={!!selectedImage}
+          onRequestClose={() => setSelectedImage(null)}
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50"
+          overlayClassName=""
+          ariaHideApp={false}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] overflow-auto bg-white p-4 rounded-lg shadow-lg">
+            <button
+              onClick={() => setSelectedImage(null)}
+              className="absolute top-2 right-2 bg-red-600 text-white px-3 py-1 rounded-full hover:bg-red-700 text-lg font-bold"
+            >
+              ✕
+            </button>
+            <img
+              src={selectedImage}
+              alt="Zoomed"
+              className="w-full h-full object-contain rounded-lg"
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

@@ -101,7 +101,7 @@ const UserDashboard = () => {
     Cookies.remove("userId");
     Cookies.remove("username");
     Cookies.remove("userRole");
-    window.location.href = "/"; // Redirect to login page
+    window.location.href = "/";
   };
 
   // Fetch data on component mount
@@ -177,11 +177,11 @@ const UserDashboard = () => {
         </div>
 
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-8 mt-6">
-          Dashboard Pengguna
+          Selamat datang
         </h1>
 
         <div className="text-3xl font-semibold text-bold mt-10 text-center">
-          Pilih Barber Terdekatmu ! Untuk Pemesanan
+          Rekomendasi Barber Terdekatmu
         </div>
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}

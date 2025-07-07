@@ -15,8 +15,15 @@ const Navbar = ({ refs }) => {
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("userRole");
-    setIsLogin(false);
-    navigate("/login");
+    Cookies.remove("userId");
+    Cookies.remove("username");
+
+    navigate("/");
+
+    // Optional: reload to force re-render after logout
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -44,7 +51,7 @@ const Navbar = ({ refs }) => {
         {/* Logo */}
         <h1
           className="text-2xl font-bold cursor-pointer bg-gradient-to-r from-gray-100 to-orange-300 bg-clip-text text-transparent pl-4"
-          onClick={() => navigate("#")}
+          onClick={() => navigate("/")}
         >
           Gó~br
         </h1>
@@ -77,6 +84,7 @@ const Navbar = ({ refs }) => {
             </button>
           )}
         </div>
+
         {/* Mobile Menu Button */}
         <div className="md:hidden">
           <button onClick={toggleMenu} className="text-white text-3xl">
@@ -107,7 +115,7 @@ const Navbar = ({ refs }) => {
             </button>
           ) : (
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/")}
               className="w-full bg-white text-gray-900 hover:bg-gray-300 px-4 py-2 rounded-full transition duration-300 mt-2"
             >
               Login / Signup

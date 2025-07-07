@@ -116,12 +116,14 @@ const Login = () => {
         </div>
 
         <div className="mt-4 text-center">
-          <span
-            onClick={() => navigate("/")}
-            className="text-white hover:underline cursor-pointer"
-          >
-            Back to Home
-          </span>
+          <div className="mt-4 text-center">
+            <button
+              onClick={() => navigate("/")}
+              className="text-sm bg-white text-gray-900 hover:bg-gray-300 px-4 py-1 rounded-full transition duration-300"
+            >
+              Back to Home
+            </button>
+          </div>
         </div>
       </div>
     </div>
