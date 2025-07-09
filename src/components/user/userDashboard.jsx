@@ -95,7 +95,6 @@ const UserDashboard = () => {
     }
   };
 
-  // Handle user logout
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("userId");

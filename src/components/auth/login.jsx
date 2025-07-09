@@ -13,7 +13,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Aktifkan loading saat login dimulai
+    setLoading(true);
 
     try {
       const response = await axios.post(
@@ -21,15 +21,14 @@ const Login = () => {
         { email, password }
       );
 
-      const { token, role } = response.data;
+      const { token, role, userId } = response.data;
 
-      // Simpan token dan role di Cookies
+      // ✅ Simpan token, role, dan userId ke Cookies
       Cookies.set("token", token, { expires: 1 });
       Cookies.set("userRole", role, { expires: 7 });
+      Cookies.set("userId", userId, { expires: 7 });
 
-      console.log("Token from Cookies:", Cookies.get("token"));
-
-      // Redirect berdasarkan role
+      // ✅ Arahkan sesuai role
       if (role === "admin") {
         navigate("/admin-dashboard");
       } else if (role === "barber") {
@@ -39,12 +38,12 @@ const Login = () => {
       }
 
       setTimeout(() => {
-        window.location.reload(); // Refresh halaman setelah login sukses
+        window.location.reload(); // Optional: kalau memang ingin refresh
       }, 1000);
     } catch (err) {
       setError(err.response?.data?.error || "Login failed. Please try again.");
     } finally {
-      setLoading(false); // Matikan loading setelah login selesai
+      setLoading(false);
     }
   };
 

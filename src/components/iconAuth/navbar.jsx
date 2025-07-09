@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const { userId } = useParams();
@@ -19,7 +20,11 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    navigate("/");
+    Cookies.remove("token");
+    Cookies.remove("userId");
+    Cookies.remove("username");
+    Cookies.remove("userRole");
+    window.location.href = "/"; // wajib pakai ini untuk full reload
   };
 
   return (

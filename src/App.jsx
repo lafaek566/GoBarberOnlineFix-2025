@@ -39,10 +39,12 @@ const App = () => {
 
   useEffect(() => {
     const token = Cookies.get("token");
-    const storedRole = Cookies.get("userRole"); // ✅ ambil dari Cookies
+    const storedRole = Cookies.get("userRole");
 
     if (token && storedRole) {
       setRole(storedRole);
+    } else {
+      setRole(null);
     }
 
     const timeout = setTimeout(() => setLoading(false), 1000);
@@ -72,8 +74,24 @@ const App = () => {
           <Route path="/register-barber" element={<RegisterAdminBarber />} />
           <Route path="/register-admin" element={<RegisterAdmin />} />
 
+          {/* Redirect Home Based on Role */}
+
+          <Route
+            path="/"
+            element={
+              role === "admin" ? (
+                <Navigate to="/admin-dashboard" />
+              ) : role === "barber" ? (
+                <Navigate to="/barber-dashboard" />
+              ) : role === "user" ? (
+                <Navigate to="/user-dashboard" />
+              ) : (
+                <Dashboard />
+              )
+            }
+          />
+
           {/* General */}
-          <Route path="/" element={<Dashboard />} />
           <Route path="/barber/:id" element={<BarberDetails />} />
           <Route path="/edit-barber/:id" element={<EditBarber />} />
           <Route path="/All-barber-dashboard" element={<Allbarberlist />} />
@@ -100,7 +118,7 @@ const App = () => {
           {/* Reviews */}
           <Route path="/reviews" element={<AllReviews />} />
 
-          {/* Fallback: Redirect to Home */}
+          {/* Fallback: Redirect to "/" */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Suspense>

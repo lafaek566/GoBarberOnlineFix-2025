@@ -14,16 +14,10 @@ const Navbar = ({ refs }) => {
 
   const handleLogout = () => {
     Cookies.remove("token");
-    Cookies.remove("userRole");
     Cookies.remove("userId");
     Cookies.remove("username");
-
-    navigate("/");
-
-    // Optional: reload to force re-render after logout
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    Cookies.remove("userRole");
+    window.location.href = "/"; // wajib pakai ini untuk full reload
   };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);

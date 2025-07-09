@@ -314,7 +314,8 @@ const BookingForm = ({ barberId }) => {
         </div>
 
         {/* Paket Description */}
-        <div className="flex flex-col mb-6">x
+        <div className="flex flex-col mb-6">
+          x
           <label
             htmlFor="paket-description"
             className="text-sm font-medium text-gray-700"
